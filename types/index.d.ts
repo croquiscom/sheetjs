@@ -219,6 +219,12 @@ export interface WritingOptions extends CommonOptions {
 
     /** Override workbook properties on save */
     Props?: Properties;
+
+    /** 
+     * Write data for stub cells
+     * @default false
+     */
+    sheetStubs?: boolean;
 }
 
 /** Workbook Object */
@@ -522,6 +528,43 @@ export interface Hyperlink {
     Tooltip?: string;
 }
 
+export interface Fill {
+    patternType?: 'none' | 'solid' | 'mediumGray' | 'darkGray' | 'lightGray' | 'darkHorizontal' | 'darkVertical' | 'darkDown' | 'darkUp' | 'darkGrid' | 'darkTrellis' | 'lightHorizontal' | 'lightVertical' | 'lightDown' | 'lightGrid' | 'lightTrellis' | 'gray125' | 'gray0625';
+    bgColor?: {rgb: string};
+    fgColor?: {rgb: string};
+}
+
+export interface Font {
+    name?: string;
+    sz?: number;
+    family?: number;
+    color?: {rgb: string};
+}
+
+export type BorderStyle = 'none' | 'thin' | 'medium' | 'dashed' | 'dotted' | 'thick' | 'double' | 'hair' | 'mediumDashed' | 'dashDot' | 'mediumDashDot' | 'DashDotDot' | 'mediumDashDotDot' | 'slantDashDot';
+
+export interface Border {
+    left?: {style?: BorderStyle, color?: {rgb: string}};
+    right?: {style?: BorderStyle, color?: {rgb: string}};
+    top?: {style?: BorderStyle, color?: {rgb: string}};
+    bottom?: {style?: BorderStyle, color?: {rgb: string}};
+}
+
+export interface Alignment {
+    vertical?: 'top' | 'right' | 'bottom' | 'left' | 'general';
+    horizontal?: 'top' | 'right' | 'bottom' | 'left' | 'general';
+    textRotation?: string;
+    indent?: string;
+    wrapText?: 'true' | 'false';
+}
+
+export interface CellStyle {
+    fill?: Fill;
+    font?: Font;
+    border?: Border;
+    alignment?: Alignment;
+}
+
 /** Worksheet Cell Object */
 export interface CellObject {
     /** The raw value of the cell.  Can be omitted if a formula is specified */
@@ -558,7 +601,7 @@ export interface CellObject {
     l?: Hyperlink;
 
     /** The style/theme of the cell (if applicable) */
-    s?: any;
+    s?: CellStyle;
 }
 
 /** Simple Cell Address */

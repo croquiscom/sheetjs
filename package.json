@@ -1,6 +1,6 @@
 {
-	"name": "xlsx",
-	"version": "0.11.17",
+	"name": "@croquiscom/xlsx",
+	"version": "0.11.17-cr1",
 	"author": "sheetjs",
 	"description": "SheetJS Spreadsheet data parser and writer",
 	"keywords": [
