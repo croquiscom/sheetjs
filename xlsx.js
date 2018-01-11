@@ -11653,7 +11653,7 @@ function get_cell_style(styles, cell, opts) {
 
 function safe_format(p, cf, opts, themes, styles) {
 	var fmtid = cf ? cf.numFmtId : 0;
-	if(p.t === 'z' && !opts.sheetStubs) return;
+	if(p.t === 'z') return;
 	if(p.t === 'd' && typeof p.v === 'string') p.v = parseDate(p.v);
 	try {
 		if(opts.cellNF) p.z = SSF._table[fmtid];
@@ -11670,7 +11670,11 @@ function safe_format(p, cf, opts, themes, styles) {
 				if((dd|0) === dd) p.w = SSF._general_int(dd);
 				else p.w = SSF._general_num(dd);
 			}
-			else if(p.v !== undefined) p.w = SSF._general(p.v,_ssfopts);
+			else if (p.v === undefined) {
+				if (p.t !== 'm') {
+					return '';
+				}
+			} else p.w = SSF._general(p.v,_ssfopts);
 		}
 		else if(p.t === 'd') p.w = SSF.format(fmtid,datenum(p.v),_ssfopts);
 		else p.w = SSF.format(fmtid,p.v,_ssfopts);
@@ -11922,7 +11926,7 @@ function write_ws_xml_sheetviews(ws, opts, idx, wb) {
 }
 
 function write_ws_xml_cell(cell, ref, ws, opts, idx, wb) {
-	if((cell.v === undefined && cell.f === undefined || cell.t === 'z') && !opts.sheetStubs) return "";
+	if ((cell.v === undefined && cell.f === undefined || cell.t === 'z') && cell.t !== 'm') return '';
 	var vv = "";
 	var oldt = cell.t, oldv = cell.v;
 	switch(cell.t) {
@@ -12114,10 +12118,47 @@ return function parse_ws_xml_data(sdata, s, opts, guess, themes, styles) {
 	if(rows.length > 0) s['!rows'] = rows;
 }; })();
 
+function setBorderStyleToMergedCell(ws, dense) {
+	if (!ws['!merges']) return;
+
+	var get_cell = function (col_index, row_index) {
+		var col = encode_col(col_index);
+		var row = encode_row(row_index);
+		return dense ? (ws[row_index]||[])[col_index]: ws[col + row];
+	}
+	var set_cell = function (col_index, row_index, cell) {
+		var col = encode_col(col_index);
+		var row = encode_row(row_index);
+		if (dense) {
+			(ws[R]||[])[C] = border_cell;
+		} else {
+			ws[col + row] = border_cell;
+		}
+	}
+
+	var cols = [];
+	for (var range of ws['!merges']) {
+		var cell = get_cell(range.s.c, range.s.r);
+		if (cell.s && cell.s.border) {
+			var border_cell = { t: 'm', s: { border: cell.s.border } };
+			for (var r = range.s.r; r <= range.e.r; r++) {
+				for (var c = range.s.c; c <= range.e.c; c++) {
+					if (r != range.s.r || c !== range.s.c) {
+						set_cell(c, r);
+					}
+				}
+			}
+		}
+	}
+}
+
 function write_ws_xml_data(ws, opts, idx, wb, rels) {
 	var o = [], r = [], range = safe_decode_range(ws['!ref']), cell="", ref, rr = "", cols = [], R=0, C=0, rows = ws['!rows'];
 	var dense = Array.isArray(ws);
 	var params = ({r:rr}), row, height = -1;
+
+	setBorderStyleToMergedCell(ws, dense);
+
 	for(C = range.s.c; C <= range.e.c; ++C) cols[C] = encode_col(C);
 	for(R = range.s.r; R <= range.e.r; ++R) {
 		r = [];
@@ -19668,9 +19709,7 @@ var XmlNode = (function () {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 var StyleBuilder = function (options) {
-
 	var customNumFmtId = 164;
-
 
 	var table_fmt = {
 		0: 'General',
@@ -20005,13 +20044,10 @@ var StyleBuilder = function (options) {
 				var $bgColor = XmlNode('bgColor');
 				if (attributes.bgColor.rgb) {
 					attributes.bgColor.rgb = attributes.bgColor.rgb.slice(-6);
-
 					if (attributes.bgColor.rgb.length == 6) {
 						attributes.bgColor.rgb = "FF" + attributes.bgColor.rgb
 					}
-
 					$bgColor.attr('rgb', attributes.bgColor.rgb);
-					$patternFill.append($bgColor);
 				} else {
 					$bgColor.attr(attributes.bgColor);
 				}

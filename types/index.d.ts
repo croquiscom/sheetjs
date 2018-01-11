@@ -220,11 +220,8 @@ export interface WritingOptions extends CommonOptions {
     /** Override workbook properties on save */
     Props?: Properties;
 
-    /** 
-     * Write data for stub cells
-     * @default false
-     */
-    sheetStubs?: boolean;
+    /** Default Cell Style */
+    defaultCellStyle?: CellStyle;
 }
 
 /** Workbook Object */
@@ -530,29 +527,34 @@ export interface Hyperlink {
 
 export interface Fill {
     patternType?: 'none' | 'solid' | 'mediumGray' | 'darkGray' | 'lightGray' | 'darkHorizontal' | 'darkVertical' | 'darkDown' | 'darkUp' | 'darkGrid' | 'darkTrellis' | 'lightHorizontal' | 'lightVertical' | 'lightDown' | 'lightGrid' | 'lightTrellis' | 'gray125' | 'gray0625';
-    bgColor?: {rgb: string};
-    fgColor?: {rgb: string};
+    bgColor?: {rgb?: string};
+    fgColor?: {rgb?: string};
 }
 
 export interface Font {
     name?: string;
     sz?: number;
     family?: number;
-    color?: {rgb: string};
+    color?: {rgb?: string};
+    bold?: boolean | 1;
 }
 
 export type BorderStyle = 'none' | 'thin' | 'medium' | 'dashed' | 'dotted' | 'thick' | 'double' | 'hair' | 'mediumDashed' | 'dashDot' | 'mediumDashDot' | 'DashDotDot' | 'mediumDashDotDot' | 'slantDashDot';
+export interface BorderSide {
+    style?: BorderStyle;
+    color?: {rgb?: string};
+}
 
 export interface Border {
-    left?: {style?: BorderStyle, color?: {rgb: string}};
-    right?: {style?: BorderStyle, color?: {rgb: string}};
-    top?: {style?: BorderStyle, color?: {rgb: string}};
-    bottom?: {style?: BorderStyle, color?: {rgb: string}};
+    left?: BorderSide;
+    right?: BorderSide;
+    top?: BorderSide;
+    bottom?: BorderSide;
 }
 
 export interface Alignment {
-    vertical?: 'top' | 'right' | 'bottom' | 'left' | 'general';
-    horizontal?: 'top' | 'right' | 'bottom' | 'left' | 'general';
+    vertical?: 'top' | 'right' | 'bottom' | 'left' | 'center' | 'general';
+    horizontal?: 'top' | 'right' | 'bottom' | 'left' | 'center' | 'general';
     textRotation?: string;
     indent?: string;
     wrapText?: 'true' | 'false';
