@@ -21,6 +21,7 @@ function write_zip(wb/*:Workbook*/, opts/*:WriteOpts*/)/*:ZIP*/ {
 /*:: declare var encrypt_agile:any; */
 function write_zip_type(wb/*:Workbook*/, opts/*:?WriteOpts*/)/*:any*/ {
 	var o = dup(opts||{});
+	o.style_builder = new StyleBuilder(opts);
 	var z = write_zip(wb, o);
 	return write_zip_denouement(z, o);
 }

@@ -54,6 +54,7 @@ bits/86_writezip.js
 bits/87_read.js
 bits/88_write.js
 bits/90_utils.js
+bits/91_stylebuilder.js
 bits/95_api.js
 bits/98_exports.js
 bits/99_footer.js
