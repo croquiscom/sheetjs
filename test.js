@@ -719,13 +719,13 @@ function deepcmp(x,y,k,m,c) {
 }
 
 var styexc = [
-	'A2|H10|bgColor.rgb',
-	'F6|H1|patternType'
+	'A2|H10|fill.bgColor.rgb',
+	'F6|H1|fill.patternType'
 ];
 var stykeys = [
-	"patternType",
-	"fgColor.rgb",
-	"bgColor.rgb"
+	"fill.patternType",
+	"fill.fgColor.rgb",
+	"fill.bgColor.rgb",
 ];
 function diffsty(ws, r1,r2) {
 	var c1 = get_cell(ws,r1).s, c2 = get_cell(ws,r2).s;
@@ -1165,30 +1165,30 @@ describe('parse features', function() {
 			'H1:J4', 'H10' /* blocks */
 		];
 		var exp/*:Array<any>*/ = [
-			{ patternType: 'darkHorizontal',
+			{fill: { patternType: 'darkHorizontal',
 			  fgColor: { theme: 9, raw_rgb: 'F79646' },
-			  bgColor: { theme: 5, raw_rgb: 'C0504D' } },
-			{ patternType: 'darkUp',
+			  bgColor: { theme: 5, raw_rgb: 'C0504D' } }},
+			{fill: { patternType: 'darkUp',
 			  fgColor: { theme: 3, raw_rgb: 'EEECE1' },
-			  bgColor: { theme: 7, raw_rgb: '8064A2' } },
-			{ patternType: 'darkGray',
+			  bgColor: { theme: 7, raw_rgb: '8064A2' } }},
+			{fill: { patternType: 'darkGray',
 			  fgColor: { theme: 3, raw_rgb: 'EEECE1' },
-			  bgColor: { theme: 1, raw_rgb: 'FFFFFF' } },
-			{ patternType: 'lightGray',
+			  bgColor: { theme: 1, raw_rgb: 'FFFFFF' } }},
+			{fill: { patternType: 'lightGray',
 			  fgColor: { theme: 6, raw_rgb: '9BBB59' },
-			  bgColor: { theme: 2, raw_rgb: '1F497D' } },
-			{ patternType: 'lightDown',
+			  bgColor: { theme: 2, raw_rgb: '1F497D' } }},
+			{fill: { patternType: 'lightDown',
 			  fgColor: { theme: 4, raw_rgb: '4F81BD' },
-			  bgColor: { theme: 7, raw_rgb: '8064A2' } },
-			{ patternType: 'lightGrid',
+			  bgColor: { theme: 7, raw_rgb: '8064A2' } }},
+			{fill: { patternType: 'lightGrid',
 			  fgColor: { theme: 6, raw_rgb: '9BBB59' },
-			  bgColor: { theme: 9, raw_rgb: 'F79646' } },
-			{ patternType: 'lightGrid',
+			  bgColor: { theme: 9, raw_rgb: 'F79646' } }},
+			{fill: { patternType: 'lightGrid',
 			  fgColor: { theme: 4, raw_rgb: '4F81BD' },
-			  bgColor: { theme: 2, raw_rgb: '1F497D' } },
-			{ patternType: 'lightVertical',
+			  bgColor: { theme: 2, raw_rgb: '1F497D' } }},
+			{fill: { patternType: 'lightVertical',
 			  fgColor: { theme: 3, raw_rgb: 'EEECE1' },
-			  bgColor: { theme: 7, raw_rgb: '8064A2' } }
+			  bgColor: { theme: 7, raw_rgb: '8064A2' } }}
 		];
 		ranges.forEach(function(rng) {
 			it('XLS  | ' + rng,function(){cmparr(rn2(rng).map(function(x){ return get_cell(wsxls,x).s; }));});
@@ -1208,9 +1208,9 @@ describe('parse features', function() {
 			var stylesxlsx = ranges.map(function(r) { return rn2(r)[0]; }).map(function(r) { return get_cell(wsxlsx,r).s; });
 			exp.forEach(function(e, i) {
 				[
-					"fgColor.theme","fgColor.raw_rgb",
-					"bgColor.theme","bgColor.raw_rgb",
-					"patternType"
+					"fill.fgColor.theme","fill.fgColor.raw_rgb",
+					"fill.bgColor.theme","fill.bgColor.raw_rgb",
+					"fill.patternType"
 				].forEach(function(k) {
 					deepcmp(e, stylesxlsx[i], k, i + ":" + k, 0);
 					/* TODO: XLS */
@@ -2139,4 +2139,3 @@ mft.forEach(function(x) {
 		case "yes-formula": formulae = true; break;
 	}});
 }); });
-
