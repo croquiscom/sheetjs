@@ -77,6 +77,7 @@ bits/86_writezip.js
 bits/87_read.js
 bits/88_write.js
 bits/90_utils.js
+bits/91_stylebuilder.js
 bits/95_api.js
 bits/97_node.js
 misc/98_esmxport.js

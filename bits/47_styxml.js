@@ -411,6 +411,9 @@ return function parse_sty_xml(data, themes, opts) {
 })();
 
 function write_sty_xml(wb/*:Workbook*/, opts)/*:string*/ {
+	if (opts.style_builder) {
+		return opts.style_builder.toXml();
+	}
 	var o = [XML_HEADER, writextag('styleSheet', null, {
 		'xmlns': XMLNS_main[0],
 		'xmlns:vt': XMLNS.vt

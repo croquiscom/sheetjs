@@ -58,6 +58,17 @@ function default_margins(margins/*:Margins*/, mode/*:?string*/) {
 }
 
 function get_cell_style(styles/*:Array<any>*/, cell/*:Cell*/, opts) {
+	if (opts.style_builder) {
+		if (/^\d+$/.exec(cell.s)) {
+			return cell.s;
+		}  // if its already an integer index, let it be
+		if (cell.s && (cell.s == +cell.s)) {
+			return cell.s;
+		}  // if its already an integer index, let it be
+		var s = cell.s || {};
+		if (cell.z) s.numFmt = cell.z;
+		return opts.style_builder.addStyle(s);
+	}
 	var z = opts.revssf[cell.z != null ? cell.z : "General"];
 	var i = 0x3c, len = styles.length;
 	if(z == null && opts.ssf) {
